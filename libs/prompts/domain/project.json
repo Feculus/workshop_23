@@ -1,0 +1,26 @@
+{
+  "name": "domain",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/prompts/domain/src",
+  "projectType": "library",
+  "tags": [
+    "type:domain",
+    "scope:prompts"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/libs/prompts/domain",
+        "main": "libs/prompts/domain/src/index.ts",
+        "tsConfig": "libs/prompts/domain/tsconfig.lib.json",
+        "assets": [
+          "libs/prompts/domain/*.md"
+        ]
+      }
+    }
+  }
+}

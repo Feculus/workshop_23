@@ -1,0 +1,26 @@
+{
+  "name": "data-access",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/prompts/data-access/src",
+  "projectType": "library",
+  "tags": [
+    "type:data-access",
+    "scope:prompts"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/libs/prompts/data-access",
+        "main": "libs/prompts/data-access/src/index.ts",
+        "tsConfig": "libs/prompts/data-access/tsconfig.lib.json",
+        "assets": [
+          "libs/prompts/data-access/*.md"
+        ]
+      }
+    }
+  }
+}
