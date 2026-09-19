@@ -1,0 +1,9 @@
+---
+description: Project constitution — delegates to AGENTS.md
+alwaysApply: true
+---
+
+Follow the conventions, commands, architecture, and working agreement in
+`AGENTS.md` at the repository root. It is the single source of truth.
+
+Do not duplicate its content in this file.
