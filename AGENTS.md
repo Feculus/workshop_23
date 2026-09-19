@@ -27,6 +27,13 @@ agents: the human decides what to build and reviews; the agent writes the code.
 7. **Don't invent facts** about tool, framework, or Nx behavior. If unsure, say
    so.
 
+## Definition of done
+
+Context lives in the **repo, not in a chat session** — a new session must be able
+to continue from the files alone. A change isn't done until the **docs of record
+are current**: update any affected ADRs and `docs/decisions.md`, plus any doc a
+fresh reader needs to understand the current state.
+
 ## Commands
 
 ```
