@@ -1,96 +1,91 @@
-# Pvs
+# Prompt Versioning Service
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+> Workshop scaffold for **"From Idea to Production with AI Only"** — an 8-hour
+> masterclass on taking a project from idea to production using AI coding agents
+> only: the human decides what to build and reviews; the agent writes the code.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+This repository is the teaching artifact for the masterclass. It is an **Nx
+integrated monorepo** that attendees grow, session by session, into a working
+**Prompt Versioning Service** — a service that versions prompts the way git
+versions code.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+> **Status:** Phase 1 — dev-ready scaffold. Skeletons + enforced architecture
+> only. **No feature code yet.**
 
-## Run tasks
+## What we're building (MVP)
 
-To run tasks with Nx use:
+- **Create a prompt** — a logical id + name.
+- **Create a version** — immutable, content-hashed; stores template text,
+  variables, and params (model, temperature, tags).
+- **Diff two versions** — API + UI (split / inline).
+- **Label / tag versions** — e.g. `dev`, `prod`.
+- **Rollback** — relabel `prod` to a previous version, no redeploy.
 
-```sh
-npx nx <target> <project-name>
+Domain logic (versioning, hashing, diffing) lives in a **pure domain lib**;
+persistence lives behind a **repository interface** in a data-access lib, so the
+storage engine is swappable and the domain never imports it.
+
+## Workspace layout
+
+```
+apps/
+  api/        NestJS API            (@nx/nest)   — type:app,        scope:api
+  api-e2e/    API e2e tests
+  web/        React + Vite web app  (@nx/react)  — type:app,        scope:web
+  web-e2e/    Web e2e tests         (Playwright)
+libs/
+  prompts/
+    domain/       pure TS: entities + version/diff logic  — type:domain,      scope:prompts
+    data-access/  repository interface + storage impl      — type:data-access, scope:prompts
+  shared/
+    types/        DTOs shared between api and web           — type:types,       scope:shared
+  web/
+    ui/           presentational React components           — type:ui,          scope:web
 ```
 
-For example:
+Import paths use the `@pvs` scope: `@pvs/prompts-domain`,
+`@pvs/prompts-data-access`, `@pvs/shared-types`, `@pvs/web-ui`.
 
-```sh
-npx nx build myproject
+## Enforced architecture
+
+The layered architecture isn't just documented — it is enforced by
+`@nx/enforce-module-boundaries`, so lint fails if a boundary is crossed:
+
+- `domain` may import **only** `shared/types` — it stays pure and can never reach
+  into storage.
+- `data-access` may import `domain` + `types`.
+- `web` may import only `web` libs + `shared` — it can never import server
+  internals.
+
+## Getting started
+
+Requires **Node 20 LTS**.
+
+```bash
+npm install
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+Common tasks:
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-To install a new plugin you can use the `nx add` command. Here's an example of adding the React plugin:
-```sh
-npx nx add @nx/react
+```bash
+npx nx serve api           # run the API
+npx nx serve web           # run the web app
+npx nx run-many -t lint    # lint everything
+npx nx run-many -t test    # run all tests
+npx nx run-many -t build   # build everything
+npx nx graph               # explore the project graph
 ```
 
-Use the plugin's generator to create new projects. For example, to create a new React app or library:
+CI uses `npx nx affected -t lint,test,build`.
 
-```sh
-# Generate an app
-npx nx g @nx/react:app demo
+## Session map
 
-# Generate a library
-npx nx g @nx/react:lib some-lib
-```
+- **Session 1** — empty folder → dev-ready Nx scaffold *(this checkpoint)*.
+- **Session 2** — idea → PRD → HLD/ADR → plan → tasks.
+- **Sessions 3–4** — domain + data-access libs, then API endpoints; then
+  diff / labels / rollback + React UI.
+- **Session 5** — tests & hardening.
+- **Session 6** — ship: per-app Docker + GitHub Actions driven by `nx affected`.
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+The instruction layer (`AGENTS.md` + thin per-tool adapters), the agents, the
+skills, and the ADR knowledge center are added in the next phases.
