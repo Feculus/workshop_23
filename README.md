@@ -57,6 +57,29 @@ The layered architecture isn't just documented — it is enforced by
 - `web` may import only `web` libs + `shared` — it can never import server
   internals.
 
+## Requirements for attendees
+
+You'll need:
+
+- **Node.js 20 LTS** (`node -v` → v20.x) — npm ships with it.
+- **Git** and a **GitHub account**.
+- An **AI coding agent** with an active account/subscription — pick one:
+  **Claude Code** (the live session standardizes on this), **Cursor**,
+  **VS Code + GitHub Copilot**, or **Codex**.
+- A **code editor** (VS Code or a JetBrains IDE).
+- **OS:** macOS, Windows, or Linux — all supported (storage runs in-memory, so
+  there's nothing native to compile).
+
+**Verify your setup before the workshop** — clone the repo and install; if this
+finishes cleanly, you're ready:
+
+```bash
+git clone https://github.com/danduh/wad-workshop-prompt-ver.git
+cd wad-workshop-prompt-ver
+npm install
+npx nx graph   # optional — opens the project graph in your browser
+```
+
 ## Getting started
 
 Requires **Node 20 LTS**.
