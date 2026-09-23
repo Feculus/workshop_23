@@ -59,7 +59,7 @@ export default [
             },
             {
               sourceTag: 'scope:prompts',
-              onlyDependOnLibsWithTags: ['scope:shared'],
+              onlyDependOnLibsWithTags: ['scope:prompts', 'scope:shared'],
             },
             {
               sourceTag: 'scope:shared',
