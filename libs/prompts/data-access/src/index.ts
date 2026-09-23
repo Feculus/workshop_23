@@ -1,1 +1,3 @@
-export * from './lib/data-access';
+export * from './lib/client';
+export * from './lib/prompts.repository';
+export * from './lib/schema';
