@@ -2,7 +2,11 @@
   "name": "@pvs/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "dev": "nx dev web",
+    "build": "nx build web",
+    "start": "nx preview web"
+  },
   "private": true,
   "devDependencies": {
     "@babel/core": "^7.14.5",
